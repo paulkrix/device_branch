@@ -21,7 +21,7 @@ util.inherits( MongoHandler, BaseHandler );
  * Default settings
  ********/
 MongoHandler.prototype.mapping = {
-  'c' : 'temperature',
+  'sensors' : 'sensors',
   'time' : 'time',
   'id': 'id',
 };

@@ -34,19 +34,15 @@ Device.prototype.label = null;
 // }
 
 Device.prototype.dataHandlers = {
-  // Mongo : {
-  //   options : {},
-  //   mapping: {
-  //     c : 'temperature',
-  //     time : 'time',
-  //     id: 'id',
-  //   },
-  // },
-  Blynk : {
-    mapping : {
-      c: 2
+  Mongo : {
+    options : {},
+    mapping: {
+      sensors: 'sensors',
+      time : 'time',
+      id: 'id',
     },
-  }
+  },
+  Blynk : {}
 }
 
 

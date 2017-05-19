@@ -51,6 +51,11 @@ BranchAdminApp.controller('DeviceController', function DeviceController( $scope,
   console.log("hello");
   console.log( $routeParams.deviceId );
   DeviceManager.get( $routeParams.deviceId ).then( function( _data ) {
+    for( var key in _data.dataHandlers ) {
+      if( key === 'Mongo' ) {
+        _data.dataHandlers[key].getHistory = true;
+      }
+    }
     $scope.device = _data;
     console.log( _data );
   });

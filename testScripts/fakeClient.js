@@ -98,26 +98,26 @@ FakeClient.prototype.__postTemperatureData = function( ) {
   temp3 = temp3 + Math.random()-0.5;
   temp3 = Math.round( (temp3) * 100 ) / 100;
   var postData = {
-    sensors: [
-      {
+    sensors: {
+      roomTemperature: {
         id: 'roomTemperature',
         label: 'Room temperature',
         value: temp1,
         unit: '&degC'
       },
-      {
+      liquidTemperature: {
         id: 'liquidTemperature',
         label: 'Liquid temperature',
         value: temp2,
         unit: '&degC'
       },
-      {
+      boxTemperature: {
         id: 'boxTemperature',
         label: 'Box temperature',
         value: temp3,
         unit: '&degC'
       },
-    ],
+    },
   };
   postData = JSON.stringify(postData);
   var options = {

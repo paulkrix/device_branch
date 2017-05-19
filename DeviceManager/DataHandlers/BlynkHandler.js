@@ -26,8 +26,11 @@ util.inherits( BlynkHandler, BaseHandler );
 
 BlynkHandler.prototype.pins = [];
 BlynkHandler.prototype.mapping = {
-  'c' : 0,
+  'sensors[boxTemperature]' : 0,
+  'sensors[liquidTemperature]' : 1,
+  'sensors[roomTemperature]' : 2,
 };
+
 BlynkHandler.prototype.name = "Blynk";
 
 BlynkHandler.prototype.initPins = function( device ) {
@@ -37,6 +40,20 @@ BlynkHandler.prototype.initPins = function( device ) {
       this.pins[ mapping[key] ] = new blynk.VirtualPin( mapping[key] );
     }
   }
+}
+
+BlynkHandler.prototype.mapData = function( data, device ) {
+  var insertData = {};
+  var mapping = this.getOption( 'mapping', device );
+  for( var key in mapping ) {
+    if( key.indexOf('[') > 0 && key.indexOf( ']' ) === key.length-1 ) {
+      var firstBracket = key.indexOf('[');
+      var arrayKey = key.substr( 0, firstBracket );
+      var elementKey = key.substr( firstBracket + 1, key.length - firstBracket - 2 );
+      insertData[ mapping[ key ] ] = data[ arrayKey ][ elementKey ].value;
+    }
+  }
+  return insertData;
 }
 
 BlynkHandler.prototype.handleData = function( data, device ) {
