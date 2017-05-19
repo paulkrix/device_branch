@@ -1,3 +1,7 @@
+h2 {
+  font-size: 2rem;
+  line-height: 1.2em;
+}
 
 .container {
   padding: 0 10px;
@@ -26,6 +30,36 @@
   max-width: none;
   margin-left: -.9375rem;
   margin-right: -.9375rem;
+}
+
+.center-line {
+  text-align: center;
+  margin-left: 0;
+  margin-right: 0;
+  vertical-align: middle;
+}
+.center-line i {
+  font-size: 30px;
+  vertical-align: middle;
+}
+.center-line:before,
+.center-line:after  {
+  background-color: #000;
+  content: "";
+  display: inline-block;
+  height: 1px;
+  position: relative;
+  vertical-align: middle;
+  width: 50%;
+  margin-top: -3px;
+}
+.center-line:before {
+  right: .625rem;
+  margin-left: -50%;
+}
+.center-line:after {
+  left: .625rem;
+  margin-right: -50%;
 }
 
 .text-small {

@@ -14,6 +14,9 @@ function Device( options, id ) {
   if( options.logger ) {
     this.logger = options.logger;
   }
+  if( options.label ) {
+    this.label = options.label;
+  }
   this.id = id;
 }
 
@@ -24,6 +27,7 @@ Device.prototype.ip = null;
 Device.prototype.port = "80";
 Device.prototype.status = "registered";
 Device.prototype.data = {};
+Device.prototype.label = null;
 
 // Device.prototype.dataHandlers = {
 //   "Sparkfun" : {},

@@ -33,6 +33,13 @@ BranchAdminApp.factory( 'DeviceManager', function( $http, $location ) {
   }
 })
 
+BranchAdminApp.filter('trusted', ['$sce', function($sce) {
+    var div = document.createElement('div');
+    return function(text) {
+        return $sce.trustAsHtml( text );
+    };
+}])
+
 BranchAdminApp.controller('DevicesController', function DevicesController( $scope, DeviceManager ) {
   DeviceManager.get().then( function( _data ) {
     $scope.devices = _data;

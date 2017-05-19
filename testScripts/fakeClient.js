@@ -14,12 +14,19 @@ var branch = {
   registerPath: "/devices",
 };
 
-var temp = 20.0;
+var temp1 = 20.0;
+var temp2 = 20.0;
+var temp3 = 20.0;
 
 var device = {
   path : '',
   port : process.argv[2],
   id : null,
+  label : "Brew controller 1",
+}
+
+if( process.argv.length > 3 ) {
+  device.label = process.argv[3];
 }
 
 var POST_INTERVAL = 1000 * 5;
@@ -53,6 +60,7 @@ FakeClient.prototype.__registerDevice = function( ) {
   var postData = {
     ip : "127.0.0.1",
     port : device.port,
+    label : device.label,
   };
   postData = JSON.stringify(postData);
   var options = {
@@ -83,10 +91,33 @@ FakeClient.prototype.__registerDevice = function( ) {
 
 FakeClient.prototype.__postTemperatureData = function( ) {
   console.log("Posting to " + device.path );
-  temp = temp + Math.random()-0.5;
-  temp = Math.round( (temp) * 100 ) / 100;
+  temp1 = temp1 + Math.random()-0.5;
+  temp1 = Math.round( (temp1) * 100 ) / 100;
+  temp2 = temp2 + Math.random()-0.5;
+  temp2 = Math.round( (temp2) * 100 ) / 100;
+  temp3 = temp3 + Math.random()-0.5;
+  temp3 = Math.round( (temp3) * 100 ) / 100;
   var postData = {
-    c : temp,
+    sensors: [
+      {
+        id: 'roomTemperature',
+        label: 'Room temperature',
+        value: temp1,
+        unit: '&degC'
+      },
+      {
+        id: 'liquidTemperature',
+        label: 'Liquid temperature',
+        value: temp2,
+        unit: '&degC'
+      },
+      {
+        id: 'boxTemperature',
+        label: 'Box temperature',
+        value: temp3,
+        unit: '&degC'
+      },
+    ],
   };
   postData = JSON.stringify(postData);
   var options = {
