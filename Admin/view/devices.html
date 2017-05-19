@@ -1,0 +1,26 @@
+<p> There {{ devices.length == 1 ? 'is' : 'are' }} {{ devices.length }} device{{ devices.length == 1 ? '' : 's' }} registered </p>
+<div class="row small-up-2 medium-up-3">
+  <div class="column" ng-repeat="device in devices">
+    <div class="card">
+      <div class="card-divider">
+        <h2><a href="#!/devices/{{ device.id }}">{{ device.label }} ({{ device.id }})</a></h2>
+        <p class="text-small">{{ device.ip }}:{{ device.port }}</p>
+      </div>
+      <div class="card-section text-center">
+        <div class="row small-up-2">
+          <div class="column" ng-repeat="sensor in device.data.sensors">
+            <div class="card">
+              <div class="card-divider">
+                {{ sensor.label }}
+              </div>
+              <div class="card-section">
+                <div class="center-line center-line-icon"><i class="material-icons">track_changes</i></div>
+                {{ sensor.value }}<span ng-bind-html="sensor.unit | trusted"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

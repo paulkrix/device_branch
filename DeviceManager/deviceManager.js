@@ -33,20 +33,17 @@ DeviceManager.prototype.registerDevice = function( deviceOptions ) {
 }
 
 DeviceManager.prototype.getDevices = function() {
+  //flatten devices
   var flatDevices = [];
   for( var i = 0; i < this._devices.length; i++ ) {
-    var flatDevice = Object.create( this._devices[i] );
-    for( var key in flatDevice ) {
-      flatDevice[key] = flatDevice[key];
-    }
-    flatDevices.push( flatDevice );
+    flatDevices.push( flattenObject(this._devices[i]) );
   }
 
   return flatDevices;
 }
 
-DeviceManager.prototype.getDevice = function() {
-  return this._devices[ deviceId ];
+DeviceManager.prototype.getDevice = function( deviceId ) {
+  return flattenObject( this._devices[ deviceId ] );
 }
 
 DeviceManager.prototype.handleInput = function( deviceId, data ) {
@@ -110,5 +107,13 @@ DeviceManager.prototype.__checkDevice = function( _device ) {
 /******
  * Private functions and variables
  ******/
+
+function flattenObject( object ) {
+  var flatObject = Object.create( object );
+  for( var key in flatObject ) {
+    flatObject[key] = flatObject[key];
+  }
+  return flatObject;
+}
 
 module.exports = new DeviceManager();

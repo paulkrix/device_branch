@@ -1,0 +1,51 @@
+<h2>{{ device.label }} ({{ device.id }})</h2>
+<p class="text-small">{{ device.ip }}:{{ device.port }}</p>
+
+<h3>Sensors</h3>
+<div class="row small-up-2 medium-up-4 text-center">
+  <div class="column" ng-repeat="sensor in device.data.sensors">
+    <div class="card">
+      <div class="card-divider">
+        {{ sensor.label }}
+      </div>
+      <div class="card-section">
+        <div class="center-line center-line-icon"><i class="material-icons">track_changes</i></div>
+        {{ sensor.value }}<span ng-bind-html="sensor.unit | trusted"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3>DataHandlers</h3>
+<div class="row small-up-2 medium-up-4 text-center">
+  <div class="column" ng-repeat="(label, value) in device.dataHandlers">
+    <div class="card">
+      <div class="card-divider">
+        {{ label }}
+      </div>
+      <div class="card-section">
+        Mapping: {{ value.mapping | json }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3>Details</h3>
+<table class="text-left">
+  <tr>
+    <th>Key</th>
+    <th>Value</th>
+  </tr>
+  <tr>
+    <td>Mode</td>
+    <td>{{ device.mode }}</td>
+  </tr>
+  <tr>
+    <td>Type</td>
+    <td>{{ device.type }}</td>
+  </tr>
+  <tr>
+    <td>Status</td>
+    <td>{{ device.status }}</td>
+  </tr>
+</table>
