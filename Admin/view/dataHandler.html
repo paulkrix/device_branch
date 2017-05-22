@@ -1,0 +1,35 @@
+<h2>{{ dataHandler.label }} data handler</h2>
+<p class="text-small"><a href="#!/devices/{{ device.id }}"> < {{ device.label }} ({{ device.id }})</a></p>
+
+<h3>Details</h3>
+<table class="text-left">
+  <tr>
+    <th>Key</th>
+    <th>Value</th>
+  </tr>
+  <tr ng-repeat="(key, value) in excludeLabelFilter(dataHandler) ">
+    <td>{{ key }}</td>
+    <td>{{ value | json }}</td>
+  </tr>
+</table>
+
+
+<!-- <h3>Details</h3>
+<table class="text-left">
+  <tr>
+    <th>Key</th>
+    <th>Value</th>
+  </tr>
+  <tr>
+    <td>Mode</td>
+    <td>{{ device.mode }}</td>
+  </tr>
+  <tr>
+    <td>Type</td>
+    <td>{{ device.type }}</td>
+  </tr>
+  <tr>
+    <td>Status</td>
+    <td>{{ device.status }}</td>
+  </tr>
+</table> -->

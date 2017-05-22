@@ -1,5 +1,6 @@
 <h2>{{ device.label }} ({{ device.id }})</h2>
 <p class="text-small">{{ device.ip }}:{{ device.port }}</p>
+<p class="text-small"><a href="#"> < All devices</a></p>
 
 <h3>Sensors</h3>
 <div class="row small-up-2 medium-up-4 text-center">
@@ -21,10 +22,7 @@
   <div class="column" ng-repeat="(label, value) in device.dataHandlers">
     <div class="card">
       <div class="card-divider">
-        {{ label }}
-      </div>
-      <div class="card-section">
-        Mapping: {{ value.mapping | json }}
+        <a href="#!/devices/{{ device.id }}/datahandlers/{{label}}">{{ label }}</a>
       </div>
     </div>
   </div>

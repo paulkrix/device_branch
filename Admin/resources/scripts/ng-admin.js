@@ -37,27 +37,50 @@ BranchAdminApp.config( function( $routeProvider ) {
       controller: 'DeviceController',
       templateUrl: 'device.html'
     })
+    .when('/devices/:deviceId/datahandlers/:handlerId', {
+      controller: 'DataHandlerController',
+      templateUrl: 'dataHandler.html'
+    })
 });
 
 BranchAdminApp.controller('DevicesController', function DevicesController( $scope, DeviceManager ) {
   DeviceManager.get().then( function( _data ) {
     $scope.devices = _data;
-    console.log( _data );
   });
   $scope.devices = [];
 });
 
 BranchAdminApp.controller('DeviceController', function DeviceController( $scope, $routeParams, DeviceManager ) {
-  console.log("hello");
-  console.log( $routeParams.deviceId );
+  DeviceManager.get( $routeParams.deviceId ).then( function( _data ) {
+    // for( var key in _data.dataHandlers ) {
+    //   if( key === 'Mongo' ) {
+    //     _data.dataHandlers[key].getHistory = true;
+    //   }
+    // }
+    $scope.device = _data;
+  });
+  $scope.device = {};
+});
+
+BranchAdminApp.controller('DataHandlerController', function DataHandlerController( $scope, $routeParams, DeviceManager ) {
   DeviceManager.get( $routeParams.deviceId ).then( function( _data ) {
     for( var key in _data.dataHandlers ) {
-      if( key === 'Mongo' ) {
-        _data.dataHandlers[key].getHistory = true;
+      if( key === $routeParams.handlerId ) {
+        $scope.dataHandler = _data.dataHandlers[key];
+        $scope.dataHandler.label = key;
       }
     }
     $scope.device = _data;
-    console.log( _data );
   });
   $scope.device = {};
+  $scope.dataHandler = {};
+  $scope.excludeLabelFilter = function( items ) {
+    var result = {};
+    angular.forEach( items, function( value, key ) {
+      if( key !== 'label' ) {
+        result[key] = value;
+      }
+    });
+    return result;
+  };
 });
