@@ -12,7 +12,7 @@ var util = require('util');
 
 var mongodbUrl = 'mongodb://localhost:27017/';
 
-function MongoHandler() {
+function MongoHandler( settings ) {
   BaseHandler.apply( this, arguments );
 }
 util.inherits( MongoHandler, BaseHandler );
@@ -32,7 +32,6 @@ MongoHandler.prototype.name = "Mongo";
 MongoHandler.prototype.host = mongodbUrl;
 
 MongoHandler.prototype.handleData = function( data, device ) {
-
   if( !data.time ) {
     data.time = moment().format();
   }
@@ -61,6 +60,35 @@ MongoHandler.prototype.handleData = function( data, device ) {
         return 0;
       }
     );
+  });
+}
+
+MongoHandler.prototype.getData = function( inputId, callback ) {
+
+  var collectionName = this.collection;
+  var database = this.database;
+  var host = this.host;
+  var field = this.mapping.sensors;
+  var query = {};
+  query[ field + ".id" ] = inputId;
+  //{sensors: {$elemMatch: {id: "roomTemperature"}}}
+  var projection = { time: 1 };
+  projection[ field ] = { $elemMatch: {id: inputId} };
+  console.log( projection);
+
+  console.log( collectionName );
+  console.log( query );
+
+  MongoClient.connect( host + database, function( error, db ) {
+    if( error !== null ) {
+      db.close();
+      return error;
+    }
+    var collection = db.collection( collectionName );
+    //var results = collection.find(  ).project( query.projection ).toArray();
+    var results = collection.find( query ).project( projection ).toArray( function( err, arr ) {
+      callback( arr );
+    });
   });
 }
 

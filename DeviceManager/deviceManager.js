@@ -2,7 +2,6 @@
 
 var http = require('http');
 var device = require('./device');
-var dataHandlers = require('./DataHandlers/dataHandlers');
 
 // var CHECK_DEVICE_INTERVAL = 5*60*1000; //Check if device is responsive every 5 minutes
 var CHECK_DEVICE_INTERVAL = 0; //Dont ping devices for status
@@ -23,12 +22,9 @@ DeviceManager.prototype.setTimeout = function( callback, interval ) {
 
 DeviceManager.prototype.registerDevice = function( deviceOptions ) {
   var id = this._devices.length;
-  console.log( deviceOptions );
   var newDevice = device( deviceOptions, id );
   this._devices[ id ] = newDevice;
-  console.log( newDevice );
-  //preload the data handlers
-  dataHandlers.getDataHandlers( newDevice.dataHandlers );
+
   return id;
 }
 
@@ -36,21 +32,19 @@ DeviceManager.prototype.getDevices = function() {
   //flatten devices
   var flatDevices = [];
   for( var i = 0; i < this._devices.length; i++ ) {
-    flatDevices.push( flattenObject(this._devices[i]) );
+    flatDevices.push( this._devices[i].flatten() );
   }
 
   return flatDevices;
 }
 
 DeviceManager.prototype.getDevice = function( deviceId ) {
-  return flattenObject( this._devices[ deviceId ] );
+  return this._devices[ deviceId ].flatten();
 }
 
 DeviceManager.prototype.handleInput = function( deviceId, data ) {
   var _device = this._devices[ deviceId ];
-  _device.data = data;
-  console.log( "logging for " + deviceId );
-  dataHandlers.handleData( data, _device );
+  _device.handleInput( data );
 }
 
 DeviceManager.prototype.handleControl = function( deviceId, data ) {
@@ -77,6 +71,11 @@ DeviceManager.prototype.handleControl = function( deviceId, data ) {
   postRequest.end();
   return 0;
 }
+
+DeviceManager.prototype.getData = function( deviceId, handler, inputId, callback ) {
+  return this._devices[ deviceId ].getData( handler, inputId, callback );
+}
+
 
 DeviceManager.prototype.__checkDevices = function() {
   console.log( "Checking " + this._devices.length + " devices");
@@ -107,13 +106,5 @@ DeviceManager.prototype.__checkDevice = function( _device ) {
 /******
  * Private functions and variables
  ******/
-
-function flattenObject( object ) {
-  var flatObject = Object.create( object );
-  for( var key in flatObject ) {
-    flatObject[key] = flatObject[key];
-  }
-  return flatObject;
-}
 
 module.exports = new DeviceManager();

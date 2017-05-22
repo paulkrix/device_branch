@@ -2,6 +2,7 @@ var BranchAdminApp = angular.module('BranchAdminApp', ['ngRoute']);
 
 BranchAdminApp.factory( 'DeviceManager', function( $http, $location ) {
   return {
+
     get: function( id ) {
       var url = $location.protocol()  + '://' + $location.host() + ':8084/devices?cacheBreaker='+Date.now();
       if( typeof id !== 'undefined' ) {
@@ -18,6 +19,20 @@ BranchAdminApp.factory( 'DeviceManager', function( $http, $location ) {
         return [];
       });
     },
+
+    getData: function( id, handler, inputId ) {
+      var url = $location.protocol()  + '://' + $location.host() + ':8084/devices/' +id+ '/dataHandler/' +handler+ '/input/' +inputId+ '?cacheBreaker='+Date.now();
+      return $http.get( url ).then( function( result ) {
+        if( result.status === 200 ) {
+          return result.data;
+        }
+        return [];
+      },
+      function(result) {
+        return [];
+      });
+    },
+
   }
 })
 BranchAdminApp.filter('trusted', ['$sce', function($sce) {
@@ -68,6 +83,9 @@ BranchAdminApp.controller('DataHandlerController', function DataHandlerControlle
       if( key === $routeParams.handlerId ) {
         $scope.dataHandler = _data.dataHandlers[key];
         $scope.dataHandler.label = key;
+        if( key === 'Mongo' ) {
+          $scope.getData( 0, "Mongo", "roomTemperature" );
+        }
       }
     }
     $scope.device = _data;
@@ -83,4 +101,9 @@ BranchAdminApp.controller('DataHandlerController', function DataHandlerControlle
     });
     return result;
   };
+  $scope.getData = function( device, handler, inputId ) {
+    DeviceManager.getData( device, handler, inputId ).then( function( _data ) {
+      $scope.data = _data;
+    });
+  }
 });

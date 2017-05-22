@@ -5,7 +5,13 @@ BaseHandler.prototype.mapping = {};
 BaseHandler.prototype.name = "Base";
 BaseHandler.prototype.handleData = function( data, device ) {};
 
-BaseHandler.prototype.init = function() {};
+BaseHandler.prototype.init = function( settings ) {
+  for( key in settings ) {
+    if( settings.hasOwnProperty( key ) ) {
+      this[key] = settings[key];
+    }
+  }
+};
 
 BaseHandler.prototype.getOption = function( option, device ) {
   if( device.dataHandlers[ this.name ].hasOwnProperty( option ) ) {

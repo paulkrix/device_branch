@@ -14,7 +14,7 @@ DataHandlers.prototype.getDataHandler = function( dataHandlerConfiguration, name
   // Add it to the list if it doesn't already exist
   if( !this.hasOwnProperty( name ) ) {
     this[ name ] = require('./' + name + 'Handler' );
-    this[ name ].init();
+    this[ name ].init( dataHandlerConfiguration );
   }
   //return the handler
   return this[ name ];

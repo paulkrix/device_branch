@@ -83,6 +83,15 @@ APIInterface.post('/devices/:deviceId/input', function( request, response ) {
   }
 });
 
+APIInterface.get('/devices/:deviceId/dataHandler/:handler/input/:inputId', function( request, response ) {
+  var deviceId =  request.params.deviceId;
+  var handler =  request.params.handler;
+  var inputId =  request.params.inputId;
+  DeviceManager.getData( deviceId, handler, inputId, function( result ) {
+    response.status( 200 ).json( result );
+  });
+});
+
 APIInterface.post('/devices/:deviceId/controls', function( request, response ) {
   var deviceId =  request.params.deviceId;
   var result = DeviceManager.handleControl( deviceId, request.body );

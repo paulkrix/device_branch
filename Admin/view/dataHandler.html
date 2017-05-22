@@ -9,7 +9,19 @@
   </tr>
   <tr ng-repeat="(key, value) in excludeLabelFilter(dataHandler) ">
     <td>{{ key }}</td>
-    <td>{{ value | json }}</td>
+    <td><pre>{{ value | json }}</pre></td>
+  </tr>
+</table>
+
+<h3>--- CURRENTLY HARDCODED FOR TEST SENSOR IN MONGO ---History</h3>
+<table class="text-left">
+  <tr>
+    <th>Time</th>
+    <th>Value</th>
+  </tr>
+  <tr ng-repeat="datum in data">
+    <td>{{ datum.time | date : "medium" }}</td>
+    <td>{{ datum.sensors[0].value }}<span ng-bind-html="datum.sensors[0].unit | trusted"></span></td>
   </tr>
 </table>
 
