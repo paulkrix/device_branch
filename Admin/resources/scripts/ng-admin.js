@@ -7,7 +7,6 @@ BranchAdminApp.factory( 'DeviceManager', function( $http, $location ) {
       var url = $location.protocol()  + '://' + $location.host() + ':8084/devices?cacheBreaker='+Date.now();
       if( typeof id !== 'undefined' ) {
         url = $location.protocol()  + '://' + $location.host() + ':8084/devices/' + id + '?cacheBreaker='+Date.now();
-        console.log( url );
       }
       return $http.get( url ).then( function( result ) {
         if( result.status === 200 ) {
@@ -83,9 +82,9 @@ BranchAdminApp.controller('DataHandlerController', function DataHandlerControlle
       if( key === $routeParams.handlerId ) {
         $scope.dataHandler = _data.dataHandlers[key];
         $scope.dataHandler.label = key;
-        if( key === 'Mongo' ) {
-          $scope.getData( 0, "Mongo", "roomTemperature" );
-        }
+        // if( key === 'Mongo' ) {
+        //   $scope.getData( 0, "Mongo", "roomTemperature" );
+        // }
       }
     }
     $scope.device = _data;
@@ -104,6 +103,7 @@ BranchAdminApp.controller('DataHandlerController', function DataHandlerControlle
   $scope.getData = function( device, handler, inputId ) {
     DeviceManager.getData( device, handler, inputId ).then( function( _data ) {
       $scope.data = _data;
+      console.log( _data );
     });
   }
 });

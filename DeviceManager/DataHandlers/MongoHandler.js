@@ -31,7 +31,12 @@ MongoHandler.prototype.database = 'brew';
 MongoHandler.prototype.name = "Mongo";
 MongoHandler.prototype.host = mongodbUrl;
 
+MongoHandler.prototype.sensors = [];
+
 MongoHandler.prototype.handleData = function( data, device ) {
+
+  this._setSensors( data );
+
   if( !data.time ) {
     data.time = moment().format();
   }
@@ -63,6 +68,7 @@ MongoHandler.prototype.handleData = function( data, device ) {
   });
 }
 
+
 MongoHandler.prototype.getData = function( inputId, callback ) {
 
   var collectionName = this.collection;
@@ -74,10 +80,6 @@ MongoHandler.prototype.getData = function( inputId, callback ) {
   //{sensors: {$elemMatch: {id: "roomTemperature"}}}
   var projection = { time: 1 };
   projection[ field ] = { $elemMatch: {id: inputId} };
-  console.log( projection);
-
-  console.log( collectionName );
-  console.log( query );
 
   MongoClient.connect( host + database, function( error, db ) {
     if( error !== null ) {
@@ -90,6 +92,17 @@ MongoHandler.prototype.getData = function( inputId, callback ) {
       callback( arr );
     });
   });
+}
+
+MongoHandler.prototype._setSensors = function( data ) {
+  if (typeof data.sensors !== 'undefined' ) {
+    this.sensors = [];
+    for( var key in data.sensors ) {
+      if( data.sensors.hasOwnProperty( key ) ) {
+        this.sensors.push( key );
+      }
+    }
+  }
 }
 
 module.exports = new MongoHandler();

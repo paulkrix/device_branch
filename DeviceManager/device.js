@@ -55,6 +55,7 @@ Device.prototype.dataHandlers = {
 }
 
 Device.prototype.handleInput = function( data ) {
+
   this.data = data;
   for( var key in this.dataHandlers ) {
     if( this.dataHandlers.hasOwnProperty( key ) ) {
@@ -76,6 +77,7 @@ Device.prototype.flatten = function() {
 Device.prototype.getData = function( handler, inputId, callback ) {
   this.dataHandlers[ handler ].getData( inputId, callback );
 }
+
 
 function device (options, id ) {
   if (options === undefined) {
