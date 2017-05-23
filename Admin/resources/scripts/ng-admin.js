@@ -1,4 +1,4 @@
-var BranchAdminApp = angular.module('BranchAdminApp', ['ngRoute']);
+var BranchAdminApp = angular.module('BranchAdminApp', ['ngRoute', 'chart.js']);
 
 BranchAdminApp.factory( 'DeviceManager', function( $http, $location ) {
   return {
@@ -76,21 +76,29 @@ BranchAdminApp.controller('DeviceController', function DeviceController( $scope,
   $scope.device = {};
 });
 
-BranchAdminApp.controller('DataHandlerController', function DataHandlerController( $scope, $routeParams, DeviceManager ) {
+BranchAdminApp.controller('DataHandlerController', function DataHandlerController( $scope, $filter, $routeParams, DeviceManager ) {
   DeviceManager.get( $routeParams.deviceId ).then( function( _data ) {
     for( var key in _data.dataHandlers ) {
       if( key === $routeParams.handlerId ) {
         $scope.dataHandler = _data.dataHandlers[key];
         $scope.dataHandler.label = key;
-        // if( key === 'Mongo' ) {
-        //   $scope.getData( 0, "Mongo", "roomTemperature" );
-        // }
+        if( key === 'Mongo' ) {
+          $scope.historyAvailable = true;
+        }
       }
     }
     $scope.device = _data;
   });
   $scope.device = {};
   $scope.dataHandler = {};
+  $scope.historyAvailable = false;
+  $scope.chart = {
+    sensor: null,
+    data : [],
+    labels : [],
+    series : [],
+  };
+
   $scope.excludeLabelFilter = function( items ) {
     var result = {};
     angular.forEach( items, function( value, key ) {
@@ -102,8 +110,26 @@ BranchAdminApp.controller('DataHandlerController', function DataHandlerControlle
   };
   $scope.getData = function( device, handler, inputId ) {
     DeviceManager.getData( device, handler, inputId ).then( function( _data ) {
-      $scope.data = _data;
-      console.log( _data );
+      $scope.history = _data;
+      formatChartData( _data, inputId );
     });
+  }
+  function formatChartData( data, inputId ) {
+    console.log( data );
+    var chart = {
+      sensor : inputId,
+      data : [],
+      labels : [],
+      series : [ data[0].sensors[inputId].label ],
+    };
+    var numDataPoints = 10;
+    var delta = (data.length-1) / (numDataPoints-1);
+    for( var i = 0; i < numDataPoints; i++ ) {
+      var index = Math.round(i*delta);
+      var datum = data[index];
+      chart.data.push( datum.sensors[inputId].value );
+      chart.labels.push( $filter("date")( datum.time, "d/M/yy h:mm a" ) );
+    }
+    $scope.chart = chart;
   }
 });

@@ -13,7 +13,7 @@
   </tr>
 </table>
 
-<div ng-if="dataHandler.sensors">
+<div ng-if="historyAvailable">
   <h3>History</h3>
   <div class="row small-up-2 medium-up-3">
     <div class="column" ng-repeat="sensor in dataHandler.sensors">
@@ -24,17 +24,17 @@
       </div>
     </div>
   </div>
-
-  <!-- <table class="text-left">
+  <canvas id="line" class="chart chart-line" chart-data="chart.data" chart-labels="chart.labels" chart-series="chart.series"></canvas>
+  <table class="text-left">
     <tr>
       <th>Time</th>
       <th>Value</th>
     </tr>
-    <tr ng-repeat="datum in data">
+    <tr ng-repeat="datum in history">
       <td>{{ datum.time | date : "medium" }}</td>
-      <td>{{ datum.sensors[0].value }}<span ng-bind-html="datum.sensors[0].unit | trusted"></span></td>
+      <td>{{ datum.sensors[ chart.sensor ].value }}<span ng-bind-html="datum.sensors[chart.sensor].unit | trusted"></span></td>
     </tr>
-  </table> -->
+  </table>
 </div>
 
 <!-- <h3>Details</h3>
