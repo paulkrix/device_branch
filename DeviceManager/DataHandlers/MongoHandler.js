@@ -76,22 +76,30 @@ MongoHandler.prototype.getData = function( inputId, callback ) {
   var host = this.host;
   var field = this.mapping.sensors;
   var query = {};
-  query[ field + "." + inputId ] = { $exists : true };
-  //{sensors: {$elemMatch: {id: "roomTemperature"}}}
-  var projection = { time: 1 };
-  projection[ field + "." + inputId ] = 1;
+  query[ field ] = { $exists : true };
+  var projection = null;
+  if( inputId !== null ) {
+    query = {};
+    query[ field + "." + inputId ] = { $exists : true };
+    //{sensors: {$elemMatch: {id: "roomTemperature"}}}
+    projection = { time: 1 };
+    projection[ field + "." + inputId ] = 1;
+  }
+
 
   MongoClient.connect( host + database, function( error, db ) {
     if( error !== null ) {
       db.close();
       return error;
     }
-    console.log( query );
     var collection = db.collection( collectionName );
     //var results = collection.find(  ).project( query.projection ).toArray();
-    var results = collection.find( query ).project( projection ).toArray( function( err, arr ) {
-      callback( arr );
-    });
+    if( query !== null ) {
+      var results = collection.find( query ).project( projection ).toArray( function( err, arr ) {
+        callback( arr );
+      });
+    }
+
     // var cursor = collection.find( query ).project( projection );
     // var results = [];
     // cursor.each( function( err, item ) {

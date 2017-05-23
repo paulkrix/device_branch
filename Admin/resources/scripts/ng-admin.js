@@ -20,7 +20,10 @@ BranchAdminApp.factory( 'DeviceManager', function( $http, $location ) {
     },
 
     getData: function( id, handler, inputId ) {
-      var url = $location.protocol()  + '://' + $location.host() + ':8084/devices/' +id+ '/dataHandler/' +handler+ '/input/' +inputId+ '?cacheBreaker='+Date.now();
+      var url = $location.protocol()  + '://' + $location.host() + ':8084/devices/' +id+ '/dataHandler/' +handler+ '/input?cacheBreaker='+Date.now();
+      if( typeof inputId !== 'undefined' ) {
+        url = $location.protocol()  + '://' + $location.host() + ':8084/devices/' +id+ '/dataHandler/' +handler+ '/input/' +inputId+ '?cacheBreaker='+Date.now();
+      }
       return $http.get( url ).then( function( result ) {
         if( result.status === 200 ) {
           return result.data;
@@ -76,18 +79,18 @@ BranchAdminApp.controller('DeviceController', function DeviceController( $scope,
   $scope.device = {};
 });
 
-BranchAdminApp.controller('DataHandlerController', function DataHandlerController( $scope, $filter, $routeParams, DeviceManager ) {
+BranchAdminApp.controller('DataHandlerController', function DataHandlerController( $scope, $filter, $timeout, $routeParams, DeviceManager ) {
   DeviceManager.get( $routeParams.deviceId ).then( function( _data ) {
+    $scope.device = _data;
     for( var key in _data.dataHandlers ) {
       if( key === $routeParams.handlerId ) {
         $scope.dataHandler = _data.dataHandlers[key];
         $scope.dataHandler.label = key;
         if( key === 'Mongo' ) {
-          $scope.historyAvailable = true;
+          getSensorHistory();
         }
       }
     }
-    $scope.device = _data;
   });
   $scope.device = {};
   $scope.dataHandler = {};
@@ -108,26 +111,39 @@ BranchAdminApp.controller('DataHandlerController', function DataHandlerControlle
     });
     return result;
   };
-  $scope.getData = function( device, handler, inputId ) {
-    DeviceManager.getData( device, handler, inputId ).then( function( _data ) {
+
+  function getSensorHistory() {
+    $scope.historyAvailable = true;
+    DeviceManager.getData( $scope.device.id, $scope.dataHandler.label ).then( function( _data ) {
       $scope.history = _data;
-      formatChartData( _data, inputId );
+      formatChartData( _data );
     });
+    $timeout( getSensorHistory, 30000 )
   }
-  function formatChartData( data, inputId ) {
-    console.log( data );
+
+  function formatChartData( data ) {
+
     var chart = {
-      sensor : inputId,
       data : [],
       labels : [],
-      series : [ data[0].sensors[inputId].label ],
+      series : [],
     };
-    var numDataPoints = 10;
+    for( key in data[0].sensors ) {
+      if( data[0].sensors.hasOwnProperty( key ) ) {
+        chart.series.push( key );
+        chart.data.push([]);
+      }
+    }
+    var numDataPoints = 50;
     var delta = (data.length-1) / (numDataPoints-1);
     for( var i = 0; i < numDataPoints; i++ ) {
       var index = Math.round(i*delta);
       var datum = data[index];
-      chart.data.push( datum.sensors[inputId].value );
+
+      for( var j = 0; j < chart.series.length; j++ ) {
+        chart.data[j].push( datum.sensors[ chart.series[j] ].value );
+      }
+
       chart.labels.push( $filter("date")( datum.time, "d/M/yy h:mm a" ) );
     }
     $scope.chart = chart;

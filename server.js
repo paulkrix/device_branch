@@ -92,6 +92,14 @@ APIInterface.get('/devices/:deviceId/dataHandler/:handler/input/:inputId', funct
   });
 });
 
+APIInterface.get('/devices/:deviceId/dataHandler/:handler/input', function( request, response ) {
+  var deviceId =  request.params.deviceId;
+  var handler =  request.params.handler;
+  DeviceManager.getData( deviceId, handler, null, function( result ) {
+    response.status( 200 ).json( result );
+  });
+});
+
 APIInterface.post('/devices/:deviceId/controls', function( request, response ) {
   var deviceId =  request.params.deviceId;
   var result = DeviceManager.handleControl( deviceId, request.body );
