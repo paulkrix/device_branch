@@ -29,7 +29,7 @@ if( process.argv.length > 3 ) {
   device.label = process.argv[3];
 }
 
-var POST_INTERVAL = 1000 * 5;
+var POST_INTERVAL = 1000 * 60;
 
 var server = app.listen( device.port, function() {
   console.log(this._connectionKey);

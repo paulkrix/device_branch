@@ -100,19 +100,8 @@ BranchAdminApp.controller('DataHandlerController', function DataHandlerControlle
     data : [],
     labels : [],
     series : [],
-    options: {
-      scales: {
-            xAxes: [{
-                type: 'time',
-                // time: {
-                //     displayFormats: {
-                //         quarter: 'MMM YYYY'
-                //     }
-                // }
-            }]
-        }
-    }
   };
+  $scope.dataFrom = [10, 'm'];
 
   $scope.excludeLabelFilter = function( items ) {
     var result = {};
@@ -123,6 +112,10 @@ BranchAdminApp.controller('DataHandlerController', function DataHandlerControlle
     });
     return result;
   };
+
+  $scope.updateChart = function() {
+    getSensorHistory();
+  }
 
   function getSensorHistory() {
     $scope.historyAvailable = true;
@@ -135,22 +128,30 @@ BranchAdminApp.controller('DataHandlerController', function DataHandlerControlle
 
   function formatChartData( data ) {
 
+    var minDate = moment().subtract($scope.dataFrom[0], $scope.dataFrom[1]);
+
+    //filter data by date
+    for( var i = data.length-1; i > 0; i-- ) {
+      if( moment( data[i].time ) < minDate ) {
+        data.splice(i, 1);
+      }
+    }
+
     var chart = {
       data : [],
       labels : [],
       series : [],
-      options: {
-        scales: {
-              xAxes: [{
-                  type: 'time',
-                  time: {
-                    min: moment().subtract(10, 'm').toDate(),
-                  }
-              }]
-          }
-      }
+      // options: {
+      //   scales: {
+      //     xAxes: [{
+      //       type: 'time',
+      //       time: {
+      //         min: moment().subtract(10, 'm').toDate(),
+      //       }
+      //     }]
+      //   },
+      // },
     };
-    console.log( chart );
     for( key in data[0].sensors ) {
       if( data[0].sensors.hasOwnProperty( key ) ) {
         chart.series.push( key );

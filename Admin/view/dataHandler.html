@@ -24,6 +24,18 @@
       </div>
     </div>
   </div>
+  <input type="number" ng-model="dataFrom[0]" ng-change="updateChart()">
+  <label for="singleSelect"> Single select: </label><br>
+  <select name="dataFromUnit" ng-model="dataFrom[1]" ng-change="updateChart()">
+    <option value="s">Seconds ago</option>
+    <option value="m">Minutes ago</option>
+    <option value="h">Hours ago</option>
+    <option value="d">Days ago</option>
+    <option value="M">Months ago</option>
+    <option value="Y">Years ago</option>
+  </select><br>
+  <!-- <input type="date" ng-model="minChartDate" ng-change="updateChart">
+  {{ minChartDate }} -->
   <canvas id="line" class="chart chart-line" chart-data="chart.data" chart-labels="chart.labels" chart-series="chart.series" chart-options="chart.options"></canvas>
   <!-- <table class="text-left">
     <tr>
