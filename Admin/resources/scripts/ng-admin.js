@@ -100,6 +100,18 @@ BranchAdminApp.controller('DataHandlerController', function DataHandlerControlle
     data : [],
     labels : [],
     series : [],
+    options: {
+      scales: {
+            xAxes: [{
+                type: 'time',
+                // time: {
+                //     displayFormats: {
+                //         quarter: 'MMM YYYY'
+                //     }
+                // }
+            }]
+        }
+    }
   };
 
   $scope.excludeLabelFilter = function( items ) {
@@ -127,24 +139,36 @@ BranchAdminApp.controller('DataHandlerController', function DataHandlerControlle
       data : [],
       labels : [],
       series : [],
+      options: {
+        scales: {
+              xAxes: [{
+                  type: 'time',
+                  time: {
+                    min: moment().subtract(10, 'm').toDate(),
+                  }
+              }]
+          }
+      }
     };
+    console.log( chart );
     for( key in data[0].sensors ) {
       if( data[0].sensors.hasOwnProperty( key ) ) {
         chart.series.push( key );
         chart.data.push([]);
       }
     }
-    var numDataPoints = 50;
+    var numDataPoints = 100;
     var delta = (data.length-1) / (numDataPoints-1);
-    for( var i = 0; i < numDataPoints; i++ ) {
-      var index = Math.round(i*delta);
-      var datum = data[index];
+    for( var i = 0; i < data.length; i++ ) {
+      // var index = Math.round(i*delta);
+      var datum = data[i];
 
       for( var j = 0; j < chart.series.length; j++ ) {
         chart.data[j].push( datum.sensors[ chart.series[j] ].value );
       }
 
-      chart.labels.push( $filter("date")( datum.time, "d/M/yy h:mm a" ) );
+      // chart.labels.push( $filter("date")( datum.time, "d/M/yy h:mm a" ) );
+      chart.labels.push( datum.time );
     }
     $scope.chart = chart;
   }

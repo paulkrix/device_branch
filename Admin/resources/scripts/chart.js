@@ -1,1 +1,1 @@
-../../../node_modules/chart.js/dist/Chart.bundle.min.js
+../../../node_modules/chart.js/dist/Chart.min.js
